@@ -14,6 +14,11 @@
         <div class="card-body p-4">
             <form action="/cadastrar_novo" method="POST">
                 <div class="mb-3">
+                    <label class="form-label fw-bold">Funcionário Responsável:</label>
+                    <input type="text" name="funcionario" class="form-control" placeholder="Seu nome" required>
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label fw-bold">Tipo de Material:</label>
                     <input type="text" name="tipo_material" class="form-control" placeholder="Ex: ACM, MDF, PS" required>
                 </div>

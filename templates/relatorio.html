@@ -19,7 +19,7 @@
                 <thead>
                     <tr>
                         <th>Data / Hora</th>
-                        <th>Operação</th>
+                        <th>Funcionário</th> <th>Operação</th>
                         <th class="text-center">Qtd</th>
                         <th>Material ID</th>
                         <th>OS / Destino</th>
@@ -29,6 +29,7 @@
                     {% for m in movimentacoes %}
                     <tr>
                         <td class="text-muted">{{ m.data_hora.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="fw-bold text-primary">{{ m.colaborador }}</td> 
                         <td>
                             <span class="badge {{ 'bg-danger' if m.tipo == 'SAIDA' else 'bg-success' }}">
                                 {{ m.tipo }}
@@ -41,9 +42,10 @@
                         </td>
                     </tr>
                     {% endfor %}
+                    
                     {% if not movimentacoes %}
                     <tr>
-                        <td colspan="5" class="text-center p-5 text-muted">
+                        <td colspan="6" class="text-center p-5 text-muted">
                             Nenhuma movimentação registrada até o momento.
                         </td>
                     </tr>
