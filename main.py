@@ -6,7 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "pax_secret"
 
-init_db() # Cria as tabelas se não existirem
+#init_db() # Cria as tabelas se não existirem
 
 @app.route('/')
 def index():
