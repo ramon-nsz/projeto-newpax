@@ -1,27 +1,26 @@
 import os
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, CheckConstraint
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 from datetime import datetime
 
-# --- CONFIGURAÇÃO DE AMBIENTE (DINÂMICA) ---
-# Tenta pegar a URL do Render. Se não existir, usa a sua local.
+# 1. Definição da URL
 DATABASE_URL = os.getenv("DATABASE_URL")
-
-if DATABASE_URL:
-    # Ajuste necessário: SQLAlchemy exige 'postgresql://' e o Render envia 'postgres://'
-    if DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 else:
-    # Sua URL local de desenvolvimento
     DATABASE_URL = "postgresql://postgres:123@localhost:5432/newpax_estoque"
 
-# --- INICIALIZAÇÃO DO BANCO ---
-engine = create_engine(DATABASE_URL)
+# 2. Configuração do Engine com tratamento de erro de conexão (pool_pre_ping)
+engine = create_engine(
+    DATABASE_URL, 
+    pool_pre_ping=True  # Evita erros de conexão "caída" no Render
+)
+
+# 3. Criação da Base e Sessão (PRECISA VIR ANTES DAS CLASSES)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# --- MODELOS ---
+# 4. Modelos (Classes)
 class EstoqueChapa(Base):
     __tablename__ = "estoque_chapas"
     id_estchapa = Column(Integer, primary_key=True, index=True)
@@ -42,5 +41,6 @@ class Movimentacao(Base):
 
     __table_args__ = (CheckConstraint(tipo.in_(['ENTRADA', 'SAIDA']), name='check_tipo_mov'),)
 
+# 5. Função de Inicialização
 def init_db():
     Base.metadata.create_all(bind=engine)

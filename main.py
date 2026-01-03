@@ -55,28 +55,51 @@ def movimentar():
 @app.route('/cadastrar_novo', methods=['GET', 'POST'])
 def cadastrar_novo():
     if request.method == 'POST':
-        # CAPTURA OS DADOS DO FORMULÁRIO
-        tipo = request.form.get('tipo_material')
-        esp = request.form.get('espessura')
-        cor = request.form.get('cor')
-        qtd = int(request.form.get('quantidade'))
-        os_destino = request.form.get('num_os')
-        funcionario = request.form.get('funcionario') # <--- NOVO: Captura o nome do funcionário
+        try:
+            # 1. Coleta os dados (com nomes exatos do seu HTML)
+            funcionario = request.form.get('funcionario')
+            tipo = request.form.get('tipo_material')
+            esp = request.form.get('espessura')
+            cor = request.form.get('cor')
+            qtd_str = request.form.get('quantidade')
+            os_destino = request.form.get('num_os')
 
-        # PASSA O FUNCIONÁRIO PARA A FUNÇÃO NO SERVICES.PY
-        if cadastrar_novo_material(tipo, esp, cor, qtd, os_destino, funcionario):
-            flash(f"✅ Material cadastrado por {funcionario}!")
-            return redirect(url_for('index'))
-        else:
-            flash("❌ Erro ao cadastrar.")
-            
+            # 2. Validação visual imediata
+            if not funcionario or not tipo or not qtd_str:
+                flash("⚠️ Erro: Nome, Tipo e Quantidade são obrigatórios!")
+                return redirect(url_for('cadastrar_novo'))
+
+            qtd = int(qtd_str)
+
+            # 3. Chama o serviço e DESEMPACOTA os dois retornos
+            sucesso, mensagem = cadastrar_novo_material(tipo, esp, cor, qtd, os_destino, funcionario)
+
+            if sucesso:
+                flash(f"✅ {mensagem}")
+                return redirect(url_for('index'))
+            else:
+                flash(f"❌ Erro no Banco: {mensagem}")
+        
+        except ValueError:
+            flash("⚠️ A quantidade deve ser um número inteiro!")
+        except Exception as e:
+            flash(f"🚨 Erro crítico: {str(e)}")
+            print(f"DEBUG: {str(e)}") # Aparece no seu terminal
+
     return render_template('registrar_material.html')
-@app.route('/relatorio')
-def relatorio():
+
+@app.route('/relatorio') # <-- Este é o endereço (URL)
+def relatorio():         # <-- Este é o nome da função (endpoint)
     db = SessionLocal()
-    historico = db.query(Movimentacao).order_by(Movimentacao.data_hora.desc()).all()
-    db.close()
-    return render_template('relatorio.html', movimentacoes=historico)
+    try:
+        # Buscamos as movimentações e incluímos os dados da chapa relacionada
+        historico = db.query(Movimentacao).order_by(Movimentacao.data_hora.desc()).all()
+        return render_template('relatorio.html', movimentacoes=historico)
+    except Exception as e:
+        flash(f"Erro ao carregar relatório: {e}")
+        return redirect(url_for('index'))
+    finally:
+        db.close()
 
 # ESTA LINHA DEVE SER SEMPRE A ÚLTIMA DO ARQUIVO
 if __name__ == "__main__":
