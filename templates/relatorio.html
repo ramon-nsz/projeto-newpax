@@ -9,36 +9,47 @@
 <body class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>📋 Histórico de Movimentações</h2>
-        <button onclick="window.print()" class="btn btn-warning fw-bold me-2">🖨️ Imprimir Relatório</button>
-        <a href="/" class="btn btn-secondary">← Voltar ao Estoque</a>
+        <div>
+            <button onclick="window.print()" class="btn btn-warning fw-bold me-2">🖨️ Imprimir</button>
+            <a href="/" class="btn btn-secondary">← Voltar</a>
+        </div>
     </div>
 
     <div class="card shadow">
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
-                <thead>
+                <thead class="table-light">
                     <tr>
                         <th>Data / Hora</th>
-                        <th>Funcionário</th> <th>Operação</th>
-                        <th class="text-center">Qtd</th>
-                        <th>Material ID</th>
+                        <th>Funcionário</th> 
+                        <th>Operação</th>
+                        <th>Material (Tipo/Esp/Cor)</th> <th class="text-center">Qtd</th>
                         <th>OS / Destino</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for m in movimentacoes %}
                     <tr>
-                        <td class="text-muted">{{ m.data_hora.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="text-muted small">{{ m.data_hora.strftime('%d/%m/%Y %H:%M') }}</td>
                         <td class="fw-bold text-primary">{{ m.colaborador }}</td> 
                         <td>
                             <span class="badge {{ 'bg-danger' if m.tipo == 'SAIDA' else 'bg-success' }}">
                                 {{ m.tipo }}
                             </span>
                         </td>
-                        <td class="text-center fw-bold">{{ m.qtd }}</td>
-                        <td><small class="text-muted">#</small>{{ m.id_estchapa }}</td>
+                        
                         <td>
-                            <span class="os-tag">{{ m.id_clienteos }}</span>
+                            {% if m.chapa %}
+                                <strong>{{ m.chapa.tipo_material }}</strong> 
+                                <span class="text-muted">({{ m.chapa.espessura }} | {{ m.chapa.cor }})</span>
+                            {% else %}
+                                <span class="text-danger italic">Material removido</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center fw-bold">{{ m.qtd }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">{{ m.id_clienteos or 'N/A' }}</span>
                         </td>
                     </tr>
                     {% endfor %}
@@ -56,6 +67,5 @@
     </div>
 
     <p class="text-center text-muted mt-4 small">NewPax Inventory System v1.1.2026</p>
-    
 </body>
 </html>

@@ -2,22 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from models.database import SessionLocal, EstoqueChapa, Movimentacao, init_db
 from services import cadastrar_novo_material, registrar_saida 
 from datetime import datetime
-from models.database import Base, engine
 
-try:
-    print("🔄 Sincronizando tabelas com o banco remoto...")
-    Base.metadata.create_all(bind=engine)
-    print("✅ Tabelas sincronizadas!")
-except Exception as e:
-    print(f"❌ Erro na sincronização: {e}")
-    
 app = Flask(__name__)
 app.secret_key = "pax_secret"
 
-print("LIMPANDO BANCO DE DADOS...")
-Base.metadata.drop_all(bind=engine) # Apaga as tabelas velhas
-Base.metadata.create_all(bind=engine) # Cria as tabelas novas com 'colaborador'
-print("BANCO DE DADOS ATUALIZADO!")
+# Chamamos o init_db apenas para garantir que as tabelas existam, 
+# sem apagar os dados que já estão lá.
+init_db()
 
 @app.route('/')
 def index():
@@ -44,7 +35,7 @@ def movimentar():
                     qtd=qtd,
                     id_estchapa=id_chapa,
                     id_clienteos=str(num_os),
-                    colaborador=funcionario, # salva o nome do funcionario
+                    colaborador=funcionario,
                     data_hora=datetime.now()
                 )
                 db.add(mov)
@@ -67,7 +58,6 @@ def movimentar():
 def cadastrar_novo():
     if request.method == 'POST':
         try:
-            # 1. Coleta os dados (com nomes exatos do seu HTML)
             funcionario = request.form.get('funcionario')
             tipo = request.form.get('tipo_material')
             esp = request.form.get('espessura')
@@ -75,14 +65,11 @@ def cadastrar_novo():
             qtd_str = request.form.get('quantidade')
             os_destino = request.form.get('num_os')
 
-            # 2. Validação visual imediata
             if not funcionario or not tipo or not qtd_str:
                 flash("⚠️ Erro: Nome, Tipo e Quantidade são obrigatórios!")
                 return redirect(url_for('cadastrar_novo'))
 
             qtd = int(qtd_str)
-
-            # 3. Chama o serviço e DESEMPACOTA os dois retornos
             sucesso, mensagem = cadastrar_novo_material(tipo, esp, cor, qtd, os_destino, funcionario)
 
             if sucesso:
@@ -95,15 +82,13 @@ def cadastrar_novo():
             flash("⚠️ A quantidade deve ser um número inteiro!")
         except Exception as e:
             flash(f"🚨 Erro crítico: {str(e)}")
-            print(f"DEBUG: {str(e)}") # Aparece no seu terminal
 
     return render_template('registrar_material.html')
 
-@app.route('/relatorio') # <-- Este é o endereço (URL)
-def relatorio():         # <-- Este é o nome da função (endpoint)
+@app.route('/relatorio')
+def relatorio():
     db = SessionLocal()
     try:
-        # Buscamos as movimentações e incluímos os dados da chapa relacionada
         historico = db.query(Movimentacao).order_by(Movimentacao.data_hora.desc()).all()
         return render_template('relatorio.html', movimentacoes=historico)
     except Exception as e:
@@ -112,6 +97,5 @@ def relatorio():         # <-- Este é o nome da função (endpoint)
     finally:
         db.close()
 
-# ESTA LINHA DEVE SER SEMPRE A ÚLTIMA DO ARQUIVO
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,6 +1,6 @@
 import os
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, CheckConstraint
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from datetime import datetime
 
 # 1. Definição da URL com Log de Depuração
@@ -38,7 +38,8 @@ class Movimentacao(Base):
     data_hora = Column(DateTime, default=datetime.now)
     colaborador = Column(String(50), nullable=False) 
     id_estchapa = Column(Integer, ForeignKey("estoque_chapas.id_estchapa"))
-    id_clienteos = Column(String(50), nullable=True) 
+    id_clienteos = Column(String(50), nullable=True)
+    chapa = relationship("EstoqueChapa")
 
     __table_args__ = (CheckConstraint(tipo.in_(['ENTRADA', 'SAIDA']), name='check_tipo_mov'),)
 
