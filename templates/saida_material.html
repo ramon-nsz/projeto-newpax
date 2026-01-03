@@ -20,6 +20,10 @@
                         
                         <form action="/movimentar" method="POST">
                             <div class="mb-3">
+                                <label for="funcionario" class="form-label fw-bold">Seu Nome (Funcionário):</label>
+                                <input type="text" class="form-control" name="funcionario" id="funcionario" placeholder="Quem está retirando?" required>
+                            </div>
+                            <div class="mb-3">
                                 <label for="chapa" class="form-label fw-bold">Selecionar Item:</label>
                                 <select class="form-select" name="chapa" id="chapa" required>
                                     <option value="" disabled selected>Escolha no estoque...</option>
@@ -30,17 +34,14 @@
                                     {% endfor %}
                                 </select>
                             </div>
-
                             <div class="mb-3">
                                 <label for="num_os" class="form-label fw-bold">Número da OS:</label>
                                 <input type="text" class="form-control" name="num_os" id="num_os" placeholder="Ex: OS 4050" required>
                             </div>
-
                             <div class="mb-4">
                                 <label for="quantidade" class="form-label fw-bold">Quantidade a Retirar:</label>
                                 <input type="number" class="form-control" name="quantidade" id="quantidade" min="1" required>
                             </div>
-
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary btn-lg">Confirmar Saída</button>
                                 <a href="/" class="btn btn-outline-secondary">Voltar ao Painel</a>

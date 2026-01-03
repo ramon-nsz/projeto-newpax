@@ -20,6 +20,7 @@ def movimentar():
     db = SessionLocal()
     if request.method == 'POST':
         try:
+            funcionario = request.form['funcionario']
             id_chapa = int(request.form['chapa'])
             qtd = int(request.form['quantidade'])
             num_os = request.form['num_os']
@@ -32,6 +33,7 @@ def movimentar():
                     qtd=qtd,
                     id_estchapa=id_chapa,
                     id_clienteos=str(num_os),
+                    colaborador=funcionario, # salva o nome do funcionario
                     data_hora=datetime.now()
                 )
                 db.add(mov)
@@ -53,15 +55,17 @@ def movimentar():
 @app.route('/cadastrar_novo', methods=['GET', 'POST'])
 def cadastrar_novo():
     if request.method == 'POST':
+        # CAPTURA OS DADOS DO FORMULÁRIO
         tipo = request.form.get('tipo_material')
         esp = request.form.get('espessura')
         cor = request.form.get('cor')
         qtd = int(request.form.get('quantidade'))
-        os_destino = request.form.get('num_os') # Captura a OS
+        os_destino = request.form.get('num_os')
+        funcionario = request.form.get('funcionario') # <--- NOVO: Captura o nome do funcionário
 
-        # Passa a OS para a função de cadastro
-        if cadastrar_novo_material(tipo, esp, cor, qtd, os_destino):
-            flash(f"✅ Material cadastrado para {os_destino}!")
+        # PASSA O FUNCIONÁRIO PARA A FUNÇÃO NO SERVICES.PY
+        if cadastrar_novo_material(tipo, esp, cor, qtd, os_destino, funcionario):
+            flash(f"✅ Material cadastrado por {funcionario}!")
             return redirect(url_for('index'))
         else:
             flash("❌ Erro ao cadastrar.")

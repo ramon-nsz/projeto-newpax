@@ -36,7 +36,7 @@ class Movimentacao(Base):
     tipo = Column(String(10)) 
     qtd = Column(Integer, nullable=False)
     data_hora = Column(DateTime, default=datetime.now)
-    id_colaborador = Column(Integer) 
+    colaborador = Column(String(50), nullable=False) 
     id_estchapa = Column(Integer, ForeignKey("estoque_chapas.id_estchapa"))
     id_clienteos = Column(String(50), nullable=True) 
 
