@@ -1,0 +1,111 @@
+
+    :root {
+        --npx-amarelo: #FFD700; /* Amarelo Industrial */
+        --npx-preto: #212529;
+        --npx-escuro: #1a1a1a;
+        --npx-fundo: #f8f9fa;
+        --npx-borda: #dee2e6;
+    }
+
+    body {
+        background-color: var(--npx-fundo);
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: var(--npx-preto);
+    }
+
+    /* Título e Cabeçalho */
+    h2 {
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -0.5px;
+        color: var(--npx-escuro);
+        border-left: 6px solid var(--npx-amarelo);
+        padding-left: 15px;
+    }
+
+    /* Botões Customizados */
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-success {
+        background-color: var(--npx-amarelo);
+        color: var(--npx-preto);
+    }
+
+    .btn-success:hover {
+        background-color: #e6c200;
+        color: black;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+    }
+
+    .btn-info {
+        background-color: var(--npx-preto);
+        color: white;
+    }
+
+    .btn-info:hover {
+        background-color: #000;
+        color: var(--npx-amarelo);
+    }
+
+    /* Card e Tabela */
+    .card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .table-dark {
+        background-color: var(--npx-escuro);
+    }
+
+    .table thead th {
+        border: none;
+        padding: 15px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        color: var(--npx-amarelo);
+    }
+
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--npx-borda);
+    }
+
+    /* Badge de Quantidade */
+    .text-primary {
+        color: var(--npx-preto) !important;
+        background-color: rgba(255, 215, 0, 0.15);
+        padding: 6px 12px;
+        border-radius: 20px;
+        display: inline-block;
+        min-width: 45px;
+    }
+
+    /* Efeito Zebra customizado */
+    .table-striped>tbody>tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 215, 0, 0.05) !important;
+    }
+
+    /* Footer */
+    .text-muted.small {
+        letter-spacing: 2px;
+        font-weight: bold;
+    }

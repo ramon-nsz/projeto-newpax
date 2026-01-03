@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Material - NewPax</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='form_style.css') }}">
+</head>
+<body class="container mt-5">
+    <div class="card shadow mx-auto" style="max-width: 500px;">
+        <div class="card-header text-center">
+            <h4 class="mb-0">Cadastrar Entrada</h4>
+        </div>
+        <div class="card-body p-4">
+            <form action="/cadastrar_novo" method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tipo de Material:</label>
+                    <input type="text" name="tipo_material" class="form-control" placeholder="Ex: ACM, MDF, PS" required>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Espessura:</label>
+                        <input type="text" name="espessura" class="form-control" placeholder="Ex: 3mm" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Cor:</label>
+                        <input type="text" name="cor" class="form-control" placeholder="Ex: Azul Brilho" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Quantidade Inicial:</label>
+                    <input type="number" name="quantidade" class="form-control" min="1" value="1" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Destinado ao serviço (OS):</label>
+                    <input type="text" name="num_os" class="form-control" placeholder="Ex: OS 1234 Cliente Tigre" required>
+                    <div class="form-text">Obrigatório para rastreabilidade no estoque.</div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-success btn-lg">Concluir Cadastro</button>
+                    <a href="/" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

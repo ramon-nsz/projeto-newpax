@@ -1,0 +1,117 @@
+/* Identidade NewPax - Relatórios */
+:root {
+    --npx-amarelo: #FFD700;
+    --npx-preto: #1a1a1a;
+    --npx-fundo: #f8f9fa;
+    --npx-entrada: #198754; /* Verde sucesso */
+    --npx-saida: #dc3545;   /* Vermelho perigo */
+}
+
+body {
+    background-color: var(--npx-fundo);
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Título com destaque NewPax */
+h2 {
+    font-weight: 800;
+    color: var(--npx-preto);
+    border-left: 6px solid var(--npx-amarelo);
+    padding-left: 15px;
+    text-transform: uppercase;
+}
+
+/* Customização da Tabela */
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: var(--npx-preto);
+}
+
+.table thead th {
+    color: var(--npx-amarelo) !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 15px;
+    border: none;
+}
+
+.table tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+/* Estilização das Badges de Operação */
+.badge {
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Destaque para a Coluna de OS */
+.os-tag {
+    background-color: rgba(26, 26, 26, 0.05);
+    color: var(--npx-preto);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border-left: 3px solid var(--npx-amarelo);
+}
+
+/* Botão Voltar */
+.btn-secondary {
+    background-color: var(--npx-preto);
+    border: none;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #000;
+    color: var(--npx-amarelo);
+}
+
+/* Configurações específicas para quando for imprimir */
+@media print {
+    /* Esconde botões e elementos desnecessários no papel */
+    .btn, .btn-secondary, hr, p.small {
+        display: none !important;
+    }
+
+    body {
+        background-color: white !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #eee !important;
+    }
+
+    /* Garante que o título e a tabela fiquem legíveis */
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        border-left: 10px solid #FFD700 !important; /* Mantém a marca NewPax */
+    }
+
+    .table thead th {
+        background-color: #f0f0f0 !important;
+        color: black !important;
+        border-bottom: 2px solid black !important;
+    }
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Saída - NewPax</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='saida_style.css') }}">
+</head>
+<body>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card">
+                    <div class="card-header p-3">
+                        <h4 class="mb-0">📤 Retirar Material</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <form action="/movimentar" method="POST">
+                            <div class="mb-3">
+                                <label for="chapa" class="form-label fw-bold">Selecionar Item:</label>
+                                <select class="form-select" name="chapa" id="chapa" required>
+                                    <option value="" disabled selected>Escolha no estoque...</option>
+                                    {% for chapa in chapas %}
+                                    <option value="{{ chapa.id_estchapa }}">
+                                        {{ chapa.tipo_material }} - {{ chapa.cor }} (Saldo: {{ chapa.quantidade_est }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="num_os" class="form-label fw-bold">Número da OS:</label>
+                                <input type="text" class="form-control" name="num_os" id="num_os" placeholder="Ex: OS 4050" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="quantidade" class="form-label fw-bold">Quantidade a Retirar:</label>
+                                <input type="number" class="form-control" name="quantidade" id="quantidade" min="1" required>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Confirmar Saída</button>
+                                <a href="/" class="btn btn-outline-secondary">Voltar ao Painel</a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

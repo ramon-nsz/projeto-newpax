@@ -1,0 +1,76 @@
+/* Variáveis de Identidade NewPax */
+:root {
+    --npx-amarelo: #FFD700;
+    --npx-preto: #1a1a1a;
+    --npx-fundo: #f4f4f9;
+}
+
+body {
+    background-color: var(--npx-fundo);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Estilização do Card */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: var(--npx-preto) !important;
+    border-bottom: 5px solid #dc3545 !important; /* Vermelho para indicar SAÍDA/SUBTRAÇÃO */
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.card-header h4 {
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Campos de Formulário */
+.form-label {
+    color: #444;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 12px;
+    border: 2px solid #eee;
+    transition: all 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #dc3545; /* Foco vermelho para combinar com a ação de saída */
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.1);
+    outline: none;
+}
+
+/* Botões */
+.btn-primary {
+    background-color: var(--npx-preto) !important;
+    border: 2px solid var(--npx-amarelo) !important;
+    color: var(--npx-amarelo) !important;
+    font-weight: 800;
+    padding: 15px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: var(--npx-amarelo) !important;
+    color: var(--npx-preto) !important;
+    transform: translateY(-2px);
+}
+
+.btn-outline-secondary {
+    border-radius: 8px;
+    font-weight: 600;
+}

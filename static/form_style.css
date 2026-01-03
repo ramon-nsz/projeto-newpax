@@ -1,0 +1,73 @@
+/* Variáveis de Identidade NewPax */
+:root {
+    --npx-amarelo: #FFD700;
+    --npx-preto: #1a1a1a;
+    --npx-fundo: #f4f4f9;
+}
+
+body {
+    background-color: var(--npx-fundo);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Estilização do Card */
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: var(--npx-preto) !important;
+    border-bottom: 5px solid var(--npx-amarelo) !important;
+    padding: 20px;
+}
+
+.card-header h4 {
+    color: var(--npx-amarelo) !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Campos de Formulário */
+.form-label {
+    color: #444;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 12px;
+    border: 2px solid #eee;
+    transition: all 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--npx-amarelo);
+    box-shadow: 0 0 0 0.25 remote rgba(255, 215, 0, 0.25);
+    outline: none;
+}
+
+/* Botões */
+.btn-success {
+    background-color: var(--npx-amarelo) !important;
+    border: none !important;
+    color: var(--npx-preto) !important;
+    font-weight: 800;
+    padding: 15px;
+    text-transform: uppercase;
+    transition: transform 0.2s;
+}
+
+.btn-success:hover {
+    background-color: #e6c200 !important;
+    transform: translateY(-2px);
+}
+
+.btn-outline-secondary {
+    border-radius: 8px;
+    font-weight: 600;
+}
