@@ -4,6 +4,13 @@ from services import cadastrar_novo_material, registrar_saida
 from datetime import datetime
 from models.database import Base, engine
 
+try:
+    print("🔄 Sincronizando tabelas com o banco remoto...")
+    Base.metadata.create_all(bind=engine)
+    print("✅ Tabelas sincronizadas!")
+except Exception as e:
+    print(f"❌ Erro na sincronização: {e}")
+    
 app = Flask(__name__)
 app.secret_key = "pax_secret"
 

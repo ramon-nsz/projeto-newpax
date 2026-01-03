@@ -3,18 +3,19 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, Foreign
 from sqlalchemy.orm import sessionmaker, declarative_base
 from datetime import datetime
 
-# 1. Definição da URL
-DATABASE_URL = os.getenv("DATABASE_URL")
-if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+# 1. Definição da URL com Log de Depuração
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    print("✅ Conexão: Variável DATABASE_URL encontrada!")
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 else:
+    print("⚠️ ALERTA: DATABASE_URL não encontrada no ambiente! Usando LOCALHOST como reserva.")
     DATABASE_URL = "postgresql://postgres:123@localhost:5432/newpax_estoque"
 
-# 2. Configuração do Engine com tratamento de erro de conexão (pool_pre_ping)
-engine = create_engine(
-    DATABASE_URL, 
-    pool_pre_ping=True  # Evita erros de conexão "caída" no Render
-)
+# 2. Configuração do Engine
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
 # 3. Criação da Base e Sessão (PRECISA VIR ANTES DAS CLASSES)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -41,6 +42,9 @@ class Movimentacao(Base):
 
     __table_args__ = (CheckConstraint(tipo.in_(['ENTRADA', 'SAIDA']), name='check_tipo_mov'),)
 
-# 5. Função de Inicialização
+# No final do arquivo database.py
 def init_db():
     Base.metadata.create_all(bind=engine)
+
+# Adicione isso para garantir que o banco atualize sempre que o app ligar
+init_db()
