@@ -2,11 +2,15 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from models.database import SessionLocal, EstoqueChapa, Movimentacao, init_db
 from services import cadastrar_novo_material, registrar_saida 
 from datetime import datetime
+from models.database import Base, engine
 
 app = Flask(__name__)
 app.secret_key = "pax_secret"
 
-#init_db() # Cria as tabelas se não existirem
+print("LIMPANDO BANCO DE DADOS...")
+Base.metadata.drop_all(bind=engine) # Apaga as tabelas velhas
+Base.metadata.create_all(bind=engine) # Cria as tabelas novas com 'colaborador'
+print("BANCO DE DADOS ATUALIZADO!")
 
 @app.route('/')
 def index():
