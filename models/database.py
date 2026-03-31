@@ -4,23 +4,26 @@ from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from datetime import datetime
 
 # 1. Definição da URL com Fallback Seguro
-# No Vercel, DATABASE_URL deve ser configurada no painel Settings > Environment Variables
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
-    # Ajuste para compatibilidade do SQLAlchemy com links do Heroku/Neon/Render
+    # Ajuste para compatibilidade do SQLAlchemy (postgres:// -> postgresql://)
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    
+    # Injetamos o sslmode diretamente na string de conexão para evitar o erro de keyword argument
+    if "localhost" not in DATABASE_URL and "sslmode" not in DATABASE_URL:
+        connector = "&" if "?" in DATABASE_URL else "?"
+        DATABASE_URL += f"{connector}sslmode=require"
 else:
-    # Importante: No Vercel, evite colocar links reais aqui. Use apenas para teste local.
+    # Fallback para SQLite local apenas se não houver variável de ambiente
     DATABASE_URL = "sqlite:///./test.db" 
 
 # 2. Configuração do Engine
-# pool_pre_ping=True ajuda a recuperar conexões perdidas, essencial em nuvem
+# Removido connect_args para evitar o erro "'sslmode' is an invalid keyword argument"
 engine = create_engine(
     DATABASE_URL, 
-    pool_pre_ping=True,
-    connect_args={"sslmode": "require"} if "localhost" not in DATABASE_URL else {}
+    pool_pre_ping=True
 )
 
 # 3. Sessão e Base
@@ -49,9 +52,6 @@ class Movimentacao(Base):
 
     __table_args__ = (CheckConstraint("tipo IN ('ENTRADA', 'SAIDA')", name='check_tipo_mov'),)
 
-# 5. Função de Inicialização (NÃO CHAMAR NO ESCOPO GLOBAL)
+# 5. Função de Inicialização
 def init_db():
     Base.metadata.create_all(bind=engine)
-
-# REMOVIDO: init_db() daqui. 
-# Motivo: Trava o deploy se o banco não estiver pronto no momento do build.
