@@ -3,25 +3,31 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, Foreign
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from datetime import datetime
 
-# 1. Definição da URL com Log de Depuração
+# 1. Definição da URL com Fallback Seguro
+# No Vercel, DATABASE_URL deve ser configurada no painel Settings > Environment Variables
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
-    print("✅ Conexão: Variável DATABASE_URL encontrada!")
+    # Ajuste para compatibilidade do SQLAlchemy com links do Heroku/Neon/Render
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 else:
-    print("⚠️ ALERTA: DATABASE_URL não encontrada no ambiente! Usando LOCALHOST como reserva.")
-    DATABASE_URL = "postgresql://postgres:123@localhost:5432/newpax_estoque"
+    # Importante: No Vercel, evite colocar links reais aqui. Use apenas para teste local.
+    DATABASE_URL = "sqlite:///./test.db" 
 
 # 2. Configuração do Engine
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+# pool_pre_ping=True ajuda a recuperar conexões perdidas, essencial em nuvem
+engine = create_engine(
+    DATABASE_URL, 
+    pool_pre_ping=True,
+    connect_args={"sslmode": "require"} if "localhost" not in DATABASE_URL else {}
+)
 
-# 3. Criação da Base e Sessão (PRECISA VIR ANTES DAS CLASSES)
+# 3. Sessão e Base
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# 4. Modelos (Classes)
+# 4. Modelos
 class EstoqueChapa(Base):
     __tablename__ = "estoque_chapas"
     id_estchapa = Column(Integer, primary_key=True, index=True)
@@ -41,11 +47,11 @@ class Movimentacao(Base):
     id_clienteos = Column(String(50), nullable=True)
     chapa = relationship("EstoqueChapa")
 
-    __table_args__ = (CheckConstraint(tipo.in_(['ENTRADA', 'SAIDA']), name='check_tipo_mov'),)
+    __table_args__ = (CheckConstraint("tipo IN ('ENTRADA', 'SAIDA')", name='check_tipo_mov'),)
 
-# No final do arquivo database.py
+# 5. Função de Inicialização (NÃO CHAMAR NO ESCOPO GLOBAL)
 def init_db():
     Base.metadata.create_all(bind=engine)
 
-# Adicione isso para garantir que o banco atualize sempre que o app ligar
-init_db()
+# REMOVIDO: init_db() daqui. 
+# Motivo: Trava o deploy se o banco não estiver pronto no momento do build.
