@@ -2,20 +2,26 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from models.database import SessionLocal, EstoqueChapa, Movimentacao, init_db
 from services import cadastrar_novo_material, registrar_saida 
 from datetime import datetime
+import os
 
 app = Flask(__name__)
-app.secret_key = "pax_secret"
+# É boa prática usar variável de ambiente para a secret key no Vercel
+app.secret_key = os.environ.get("SECRET_KEY", "pax_secret")
 
-# Chamamos o init_db apenas para garantir que as tabelas existam, 
-# sem apagar os dados que já estão lá.
-init_db()
+# 1. REMOVEMOS o init_db() direto do escopo global. 
+# No Vercel, se o banco demorar a responder, o import falha e dá erro 500.
+# As tabelas devem ser criadas manualmente ou via script antes do deploy.
 
 @app.route('/')
 def index():
     db = SessionLocal()
-    chapas = db.query(EstoqueChapa).all()
-    db.close()
-    return render_template('index.html', chapas=chapas)
+    try:
+        chapas = db.query(EstoqueChapa).all()
+        return render_template('index.html', chapas=chapas)
+    except Exception as e:
+        return f"Erro ao conectar ao banco: {e}"
+    finally:
+        db.close()
 
 @app.route('/movimentar', methods=['GET', 'POST'])
 def movimentar():
@@ -50,6 +56,8 @@ def movimentar():
         finally:
             db.close()
             
+    # Criamos uma nova sessão para o re-render da página caso falte algo
+    db = SessionLocal()
     chapas = db.query(EstoqueChapa).all()
     db.close()
     return render_template('saida_material.html', chapas=chapas)
@@ -96,6 +104,11 @@ def relatorio():
         return redirect(url_for('index'))
     finally:
         db.close()
+
+# 2. ESSENCIAL PARA O VERCEL:
+# O Vercel procura por um objeto chamado 'app' no nível do módulo.
+# A linha abaixo garante que o Vercel encontre a instância do Flask.
+app = app
 
 if __name__ == "__main__":
     app.run(debug=True)
