@@ -5,12 +5,20 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-# É boa prática usar variável de ambiente para a secret key no Vercel
-app.secret_key = os.environ.get("SECRET_KEY", "pax_secret")
+# Usando variável de ambiente para a secret key
+app.secret_key = os.environ.get("SECRET_KEY", "pax_secret_key_123")
 
-# 1. REMOVEMOS o init_db() direto do escopo global. 
-# No Vercel, se o banco demorar a responder, o import falha e dá erro 500.
-# As tabelas devem ser criadas manualmente ou via script antes do deploy.
+# --- ROTA DE SUPORTE (ESSENCIAL PARA O PRIMEIRO ACESSO) ---
+@app.route('/setup')
+def setup():
+    """Rota temporária para criar as tabelas no Supabase"""
+    try:
+        init_db()
+        return "✅ Tabelas criadas/verificadas com sucesso no Supabase!"
+    except Exception as e:
+        return f"❌ Erro ao criar tabelas: {str(e)}"
+
+# --- ROTAS PRINCIPAIS ---
 
 @app.route('/')
 def index():
@@ -19,7 +27,8 @@ def index():
         chapas = db.query(EstoqueChapa).all()
         return render_template('index.html', chapas=chapas)
     except Exception as e:
-        return f"Erro ao conectar ao banco: {e}"
+        # Se as tabelas não existirem, redireciona para o setup
+        return f"Erro ao conectar ao banco. Se for o primeiro acesso, execute a rota /setup. Detalhe: {e}"
     finally:
         db.close()
 
@@ -34,6 +43,7 @@ def movimentar():
             num_os = request.form['num_os']
             
             chapa = db.query(EstoqueChapa).filter(EstoqueChapa.id_estchapa == id_chapa).first()
+            
             if chapa and chapa.quantidade_est >= qtd:
                 chapa.quantidade_est -= qtd
                 mov = Movimentacao(
@@ -49,14 +59,14 @@ def movimentar():
                 flash(f"✅ Saída da OS {num_os} registrada!")
                 return redirect(url_for('relatorio'))
             else:
-                flash("❌ Erro: Saldo insuficiente.")
+                flash("❌ Erro: Saldo insuficiente ou material não encontrado.")
         except Exception as e:
             db.rollback()
-            flash(f"❌ Erro: {e}")
+            flash(f"❌ Erro ao processar saída: {e}")
         finally:
             db.close()
             
-    # Criamos uma nova sessão para o re-render da página caso falte algo
+    # Para carregar a lista de chapas no formulário (GET ou falha no POST)
     db = SessionLocal()
     chapas = db.query(EstoqueChapa).all()
     db.close()
@@ -105,9 +115,9 @@ def relatorio():
     finally:
         db.close()
 
-# 2. ESSENCIAL PARA O VERCEL:
-# O Vercel procura por um objeto chamado 'app' no nível do módulo.
-# A linha abaixo garante que o Vercel encontre a instância do Flask.
+# --- FINALIZAÇÃO ---
+
+# Exporta para o Vercel
 app = app
 
 if __name__ == "__main__":
