@@ -8,9 +8,9 @@ Aplicação web para controle de inventário de chapas (materiais de comunicaç�
 
 ## 📌 Contexto
 
-Na empresa onde trabalho, o controle de estoque de chapas era feito manualmente — anotações em papel e planilhas que não se conversavam entre si, gerando perda de rastreabilidade (quem retirou material, quando, e para qual Ordem de Serviço). Por iniciativa própria, identifiquei o problema e desenvolvi este sistema do zero: do levantamento do processo até o deploy em produção.
+Na empresa onde trabalho, o controle de estoque de chapas é feito manualmente — anotações em papel e planilhas que não se conversam entre si, gerando risco de erro e perda de rastreabilidade (quem retirou material, quando, e para qual Ordem de Serviço). Por iniciativa própria, identifiquei o problema e desenvolvi este sistema do zero, fora do escopo da minha função, como prova de conceito completa: do levantamento do processo ao deploy em nuvem.
 
-**Resultado:** controle de estoque 100% digitalizado, com rastreabilidade total de movimentações e disponibilidade de dados em tempo real, hoje em uso ativo na empresa.
+**Resultado:** um protótipo funcional e publicamente acessível, demonstrando uma solução de ponta a ponta para o problema — atualmente em avaliação para adoção formal pela empresa.
 
 ## ⚙️ Funcionalidades
 
